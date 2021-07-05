@@ -16,7 +16,6 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/search_in_wiki_layout"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/search_wiki"
@@ -53,19 +52,16 @@
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/two_days_ago_chip"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/one_days_ago_chip"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/today_chip"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </com.google.android.material.chip.ChipGroup>
@@ -112,7 +108,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:backgroundTint="@color/primary_color"
         app:fabAlignmentMode="center"
         app:fabAnimationMode="slide"
         app:hideOnScroll="true"

@@ -15,6 +15,7 @@ import ru.androidlearning.theuniversearoundus.databinding.PhotoOfTheDayFragmentB
 import ru.androidlearning.theuniversearoundus.model.DataLoadState
 import ru.androidlearning.theuniversearoundus.model.web.data_sources.api.PictureOfTheDayDTO
 import ru.androidlearning.theuniversearoundus.ui.MainActivity
+import ru.androidlearning.theuniversearoundus.ui.choice_of_theme.ChoiceOfThemeFragment
 import ru.androidlearning.theuniversearoundus.ui.utils.showSnackBar
 import java.text.SimpleDateFormat
 import java.util.*
@@ -48,14 +49,16 @@ class PhotoOfTheDayFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         photoOfTheDayViewModel.run {
             photoOfTheDayLiveData.observe(viewLifecycleOwner) { dataLoadState -> renderData(dataLoadState) }
-            getPictureOfTheDayFromServer()
-            setBottomSheetBehavior(photoOfTheDayFragmentBinding.includedBottomSheetLayout.bottomSheetLayout)
+            if (savedInstanceState == null) {
+                getPictureOfTheDayFromServer()
+            }
         }
         photoOfTheDayFragmentBinding.searchInWikiLayout.setEndIconOnClickListener {
             val searchText = photoOfTheDayFragmentBinding.searchInWikiEditText.text
             val uri = Uri.parse("${WIKI_BASE_URL}${searchText}")
             startActivity(Intent(Intent.ACTION_VIEW, uri))
         }
+        setBottomSheetBehavior(photoOfTheDayFragmentBinding.includedBottomSheetLayout.bottomSheetLayout)
         setBottomAppBar()
         initChips()
     }
@@ -101,7 +104,7 @@ class PhotoOfTheDayFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.app_bar_settings -> {
-                Toast.makeText(context, "Settings will be implemented later", Toast.LENGTH_SHORT).show() //заглушка, в будущем будет доработано
+                activity?.run { supportFragmentManager.beginTransaction().replace(R.id.container, ChoiceOfThemeFragment()).addToBackStack(null).commit() }
             }
             android.R.id.home -> {
                 BottomNavigationDrawerFragment().show(parentFragmentManager, null)

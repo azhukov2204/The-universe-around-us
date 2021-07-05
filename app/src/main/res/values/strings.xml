@@ -7,4 +7,8 @@
     <string name="settings">Settings</string>
     <string name="to_screen_1">To screen 1</string>
     <string name="to_screen_2">To screen 2</string>
+    <string name="chose_a_theme_title">Chose a theme</string>
+    <string name="blue_theme">Blue theme</string>
+    <string name="orange_theme">Orange theme</string>
+    <string name="green_theme">Green theme</string>
 </resources>
