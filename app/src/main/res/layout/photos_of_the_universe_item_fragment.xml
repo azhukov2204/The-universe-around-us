@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.photos_of_the_universe.item_fragment.PhotosOfTheUniverseItemFragment">
+
+    <ru.androidlearning.theuniversearoundus.ui.utils.EquilateralImageView
+        android:id="@+id/photo_of_universe_image_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:srcCompat="@drawable/ic_no_photo" />
+
+    <include
+        android:id="@+id/included_loading_layout"
+        layout="@layout/loading_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+
+</FrameLayout>

@@ -5,32 +5,31 @@ import android.net.Uri
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.view.*
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.constraintlayout.widget.ConstraintLayout
-import coil.api.load
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import ru.androidlearning.theuniversearoundus.R
 import ru.androidlearning.theuniversearoundus.databinding.PhotoOfTheDayFragmentBinding
 import ru.androidlearning.theuniversearoundus.model.DataLoadState
 import ru.androidlearning.theuniversearoundus.model.web.data_sources.api.PictureOfTheDayDTO
-import ru.androidlearning.theuniversearoundus.ui.MainActivity
-import ru.androidlearning.theuniversearoundus.ui.choice_of_theme.ChoiceOfThemeFragment
+import ru.androidlearning.theuniversearoundus.ui.photo_of_the_day.image.ImageFragment
+import ru.androidlearning.theuniversearoundus.ui.photo_of_the_day.youtube.YouTubeFragment
 import ru.androidlearning.theuniversearoundus.ui.utils.showSnackBar
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.regex.Pattern
 
 private const val WIKI_BASE_URL = "https://en.wikipedia.org/wiki/"
+private const val IMAGE_MEDIA_TYPE = "image"
+private const val VIDEO_MEDIA_TYPE = "video"
+private const val REGEX_GET_VIDEO_ID = "^https?://.*(?:youtu.be/|v/|u/\\w/|embed/|watch?v=)([^#&?]*).*$"
+private const val DATE_FORMAT = "yyyy-MM-dd"
 
 class PhotoOfTheDayFragment : Fragment() {
-    companion object {
-        fun newInstance() = PhotoOfTheDayFragment()
-    }
-
     private var _binding: PhotoOfTheDayFragmentBinding? = null
     private val photoOfTheDayFragmentBinding get() = _binding!!
     private val photoOfTheDayViewModel: PhotoOfTheDayViewModel by lazy { ViewModelProvider(this).get(PhotoOfTheDayViewModel::class.java) }
-    private val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    private val simpleDateFormat = SimpleDateFormat(DATE_FORMAT, Locale.getDefault())
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,7 +58,6 @@ class PhotoOfTheDayFragment : Fragment() {
             startActivity(Intent(Intent.ACTION_VIEW, uri))
         }
         setBottomSheetBehavior(photoOfTheDayFragmentBinding.includedBottomSheetLayout.bottomSheetLayout)
-        setBottomAppBar()
         initChips()
     }
 
@@ -69,6 +67,7 @@ class PhotoOfTheDayFragment : Fragment() {
         val currentDateString = simpleDateFormat.format(calendar.time)
         val oneDayAgoString = simpleDateFormat.format(calendar.apply { add(Calendar.DATE, -1) }.time)
         val twoDayAgoString = simpleDateFormat.format(calendar.apply { add(Calendar.DATE, -1) }.time)
+        //twoDayAgoString = "2021-07-07" //за эту дату приходит ссылка на видео, для теста
 
         photoOfTheDayFragmentBinding.apply {
             oneDaysAgoChip.text = oneDayAgoString
@@ -89,28 +88,6 @@ class PhotoOfTheDayFragment : Fragment() {
                 }
             }
         }
-    }
-
-    private fun setBottomAppBar() {
-        (activity as MainActivity).setSupportActionBar(photoOfTheDayFragmentBinding.bottomAppBar)
-        setHasOptionsMenu(true)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.menu_bottom_bar, menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.app_bar_settings -> {
-                activity?.run { supportFragmentManager.beginTransaction().replace(R.id.container, ChoiceOfThemeFragment()).addToBackStack(null).commit() }
-            }
-            android.R.id.home -> {
-                BottomNavigationDrawerFragment().show(parentFragmentManager, null)
-            }
-        }
-        return super.onOptionsItemSelected(item)
     }
 
     private fun setBottomSheetBehavior(bottomSheetLayout: ConstraintLayout) {
@@ -157,22 +134,35 @@ class PhotoOfTheDayFragment : Fragment() {
     }
 
     private fun fillData(responseData: PictureOfTheDayDTO) {
-        val imageUrl = responseData.url
-        if (imageUrl.isNullOrBlank()) {
-            photoOfTheDayFragmentBinding.photoOfTheDayImageView.setImageResource(R.drawable.ic_no_photo)
-            showError(getString(R.string.empty_image_url))
-        } else {
-            photoOfTheDayFragmentBinding.photoOfTheDayImageView.load(imageUrl) {
-                lifecycle(this@PhotoOfTheDayFragment)
-                error(R.drawable.ic_error_load_image)
-            }
-        }
-
         photoOfTheDayFragmentBinding.includedBottomSheetLayout.apply {
             bottomSheetDescription.text = responseData.explanation
             bottomSheetDescriptionTitle.text = responseData.title
         }
+        val imageUrl = responseData.url
+        when (responseData.mediaType) {
+            VIDEO_MEDIA_TYPE -> loadVideo(imageUrl)
+            IMAGE_MEDIA_TYPE -> loadImage(imageUrl)
+            else -> loadImage(imageUrl)
+        }
+    }
 
-        loadingLayoutIsVisible(false)
+    private fun loadImage(imageUrl: String?) {
+        childFragmentManager.beginTransaction().replace(R.id.image_or_video_fragment, ImageFragment.newInstance(imageUrl)).runOnCommit {
+            loadingLayoutIsVisible(false)
+        }.commit()
+    }
+
+    private fun loadVideo(imageUrl: String?) {
+        var videoId: String? = null
+        val pattern = Pattern.compile(REGEX_GET_VIDEO_ID, Pattern.CASE_INSENSITIVE)
+        imageUrl?.let {
+            val matcher = pattern.matcher(it)
+            if (matcher.matches()) {
+                videoId = matcher.group(1)
+            }
+        }
+        childFragmentManager.beginTransaction().replace(R.id.image_or_video_fragment, YouTubeFragment.newInstance(videoId)).runOnCommit {
+            loadingLayoutIsVisible(false)
+        }.commit()
     }
 }

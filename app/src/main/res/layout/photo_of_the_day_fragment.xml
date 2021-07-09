@@ -77,13 +77,10 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <ru.androidlearning.theuniversearoundus.ui.utils.EquilateralImageView
-                android:id="@+id/photo_of_the_day_image_view"
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/image_or_video_fragment"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:srcCompat="@drawable/ic_no_photo" />
+                android:layout_height="wrap_content" />
         </androidx.core.widget.NestedScrollView>
 
         <include
@@ -103,15 +100,4 @@
         android:id="@+id/included_bottom_sheet_layout"
         layout="@layout/bottom_sheet_layout" />
 
-    <com.google.android.material.bottomappbar.BottomAppBar
-        android:id="@+id/bottom_app_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        app:fabAlignmentMode="center"
-        app:fabAnimationMode="slide"
-        app:hideOnScroll="true"
-        app:layout_anchorGravity="bottom|center"
-        app:layout_scrollFlags="enterAlways|scroll"
-        app:navigationIcon="@drawable/ic_hamburger_menu_bottom_bar_button" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

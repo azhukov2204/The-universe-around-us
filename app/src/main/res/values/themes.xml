@@ -14,6 +14,7 @@
         <!-- Customize your theme here. -->
         <item name="fontFamily">"roboto_mono"</item>
         <item name="bottomAppBarStyle">@style/BottomAppBarCustom</item>
+        <item name="bottomNavigationStyle">@style/BottomNavigationViewCustom</item>
         <item name="android:colorBackground">@color/white</item>
         <item name="materialButtonStyle">@style/MaterialButtonCustom</item>
         <item name="textInputStyle">@style/TextFieldDefault</item>
@@ -43,6 +44,10 @@
     </style>
 
     <style name="BottomAppBarCustom" parent="Widget.MaterialComponents.BottomAppBar">
+        <item name="backgroundTint">?attr/colorPrimary</item>
+    </style>
+
+    <style name="BottomNavigationViewCustom" parent="Widget.MaterialComponents.BottomNavigationView.Colored">
         <item name="backgroundTint">?attr/colorPrimary</item>
     </style>
 
