@@ -53,7 +53,6 @@ class ImageFragment : Fragment() {
     private fun showError(errorMessage: String?) {
         val message = "${getString(R.string.error_loading_data)}: $errorMessage"
         view?.showSnackBar(message)
-        //loadingLayoutIsVisible(false)
     }
 
     companion object {
