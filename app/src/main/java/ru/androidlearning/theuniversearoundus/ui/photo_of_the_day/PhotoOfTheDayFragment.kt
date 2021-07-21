@@ -58,7 +58,6 @@ class PhotoOfTheDayFragment : Fragment() {
             val uri = Uri.parse("${WIKI_BASE_URL}${searchText}")
             startActivity(Intent(Intent.ACTION_VIEW, uri))
         }
-        //setBottomSheetBehavior(photoOfTheDayFragmentBinding.includedBottomSheetLayout.bottomSheetLayout)
         initChips()
     }
 

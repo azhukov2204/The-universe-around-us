@@ -4,14 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_graph"
     app:startDestination="@id/photo_of_the_day_fragment">
-
     <fragment
         android:id="@+id/photo_of_the_day_fragment"
         android:name="ru.androidlearning.theuniversearoundus.ui.photo_of_the_day.PhotoOfTheDayFragment"
         android:label="photo_of_the_day_fragment"
-        tools:layout="@layout/photo_of_the_day_fragment">
-
-    </fragment>
+        tools:layout="@layout/photo_of_the_day_fragment" />
     <fragment
         android:id="@+id/photos_of_the_universe_fragment"
         android:name="ru.androidlearning.theuniversearoundus.ui.photos_of_the_universe.PhotosOfTheUniverseFragment"
@@ -21,7 +18,10 @@
         android:id="@+id/settings_fragment"
         android:name="ru.androidlearning.theuniversearoundus.ui.choice_of_theme.ChoiceOfThemeFragment"
         android:label="choice_of_theme_fragment"
-        tools:layout="@layout/choice_of_theme_fragment">
-    </fragment>
-
+        tools:layout="@layout/choice_of_theme_fragment" />
+    <fragment
+        android:id="@+id/notes_fragment"
+        android:name="ru.androidlearning.theuniversearoundus.ui.notes.NotesFragment"
+        android:label="notes_fragment"
+        tools:layout="@layout/notes_fragment" />
 </navigation>

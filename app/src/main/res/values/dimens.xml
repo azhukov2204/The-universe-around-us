@@ -10,4 +10,6 @@
     <dimen name="stroke_width">2dp</dimen>
     <dimen name="material_buttons_corner_size">10dp</dimen>
     <dimen name="circle_indicator_height">48dp</dimen>
+    <dimen name="note_item_text_size">25sp</dimen>
+    <dimen name="creation_date_text_size">15sp</dimen>
 </resources>
