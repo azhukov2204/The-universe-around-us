@@ -29,7 +29,7 @@
         <item name="colorSecondary">@color/deep_orange</item>
         <item name="colorSecondaryVariant">@color/dark_deep_orange</item>
         <item name="colorOnSecondary">@color/white</item>
-        <item name="fontFamily">"casual"</item>
+        <item name="fontFamily">@font/playball</item>
     </style>
 
     <style name="TheUniverseAroundUs.GreenTheme">
