@@ -3,10 +3,12 @@ package ru.androidlearning.theuniversearoundus.ui
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
 import ru.androidlearning.theuniversearoundus.R
 import ru.androidlearning.theuniversearoundus.databinding.MainActivityBinding
 import ru.androidlearning.theuniversearoundus.ui.choice_of_theme.THEME_KEY
-import ru.androidlearning.theuniversearoundus.ui.photo_of_the_day.PhotoOfTheDayFragment
+import ru.androidlearning.theuniversearoundus.ui.utils.getResourceIdFromThemeNumber
 
 class MainActivity : AppCompatActivity() {
 
@@ -14,20 +16,17 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        applySavedTheme()
         binding = MainActivityBinding.inflate(layoutInflater)
         val view = binding.root
-        applySavedTheme()
         setContentView(view)
-        if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.container, PhotoOfTheDayFragment.newInstance())
-                .commitNow()
-        }
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.navigation_host_fragment) as NavHostFragment
+        val navController = navHostFragment.navController
+        binding.bottomNavigationView.setupWithNavController(navController)
     }
 
     private fun applySavedTheme() {
-        val theme = getPreferences(Context.MODE_PRIVATE).getInt(THEME_KEY, R.id.blue_theme_button)
-        setTheme(theme)
+        val themeResourceId = getResourceIdFromThemeNumber(getPreferences(Context.MODE_PRIVATE).getInt(THEME_KEY, 0))
+        setTheme(themeResourceId)
     }
-
 }

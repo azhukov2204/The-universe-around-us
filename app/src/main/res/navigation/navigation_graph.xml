@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_graph"
+    app:startDestination="@id/photo_of_the_day_fragment">
+
+    <fragment
+        android:id="@+id/photo_of_the_day_fragment"
+        android:name="ru.androidlearning.theuniversearoundus.ui.photo_of_the_day.PhotoOfTheDayFragment"
+        android:label="photo_of_the_day_fragment"
+        tools:layout="@layout/photo_of_the_day_fragment">
+
+    </fragment>
+    <fragment
+        android:id="@+id/photos_of_the_universe_fragment"
+        android:name="ru.androidlearning.theuniversearoundus.ui.photos_of_the_universe.PhotosOfTheUniverseFragment"
+        android:label="photos_of_the_universe_fragment"
+        tools:layout="@layout/photos_of_the_universe_fragment" />
+    <fragment
+        android:id="@+id/settings_fragment"
+        android:name="ru.androidlearning.theuniversearoundus.ui.choice_of_theme.ChoiceOfThemeFragment"
+        android:label="choice_of_theme_fragment"
+        tools:layout="@layout/choice_of_theme_fragment">
+    </fragment>
+
+</navigation>

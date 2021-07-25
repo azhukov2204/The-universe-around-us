@@ -4,22 +4,15 @@ import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import com.google.android.material.appbar.MaterialToolbar
 import ru.androidlearning.theuniversearoundus.R
 import ru.androidlearning.theuniversearoundus.databinding.ChoiceOfThemeFragmentBinding
-import ru.androidlearning.theuniversearoundus.ui.MainActivity
+import ru.androidlearning.theuniversearoundus.ui.utils.getThemeNumberFromResourceId
 
 const val THEME_KEY = "THEME"
 
-class ChoiceOfThemeFragment : Fragment(), View.OnClickListener {
-    companion object {
-        @JvmStatic
-        fun newInstance() = ChoiceOfThemeFragment()
-    }
-
+class ChoiceOfThemeFragment : Fragment() {
     private var _binding: ChoiceOfThemeFragmentBinding? = null
     private val choiceOfThemeFragmentBinding get() = _binding!!
 
@@ -38,22 +31,15 @@ class ChoiceOfThemeFragment : Fragment(), View.OnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val toolbar = view.findViewById<MaterialToolbar>(R.id.topAppBar)
-        (activity as MainActivity).apply {
-            setSupportActionBar(toolbar)
-            supportActionBar?.setDisplayHomeAsUpEnabled(true)
-            supportActionBar?.setHomeButtonEnabled(true)
-            setHasOptionsMenu(true)
-        }
         choiceOfThemeFragmentBinding.run {
-            blueThemeButton.setOnClickListener(this@ChoiceOfThemeFragment)
-            greenThemeButton.setOnClickListener(this@ChoiceOfThemeFragment)
-            orangeThemeButton.setOnClickListener(this@ChoiceOfThemeFragment)
+            blueThemeButton.setOnClickListener(onClickListener)
+            greenThemeButton.setOnClickListener(onClickListener)
+            orangeThemeButton.setOnClickListener(onClickListener)
         }
     }
 
-    override fun onClick(v: View?) {
-        val theme = when (v?.id) {
+    private val onClickListener = View.OnClickListener { view ->
+        val themeResourceId = when (view?.id) {
             R.id.blue_theme_button -> {
                 R.style.TheUniverseAroundUs
             }
@@ -70,20 +56,10 @@ class ChoiceOfThemeFragment : Fragment(), View.OnClickListener {
             }
         }
 
-        activity?.let {
-            it.getPreferences(Context.MODE_PRIVATE).edit().putInt(THEME_KEY, theme).apply()
-            it.recreate()
+        activity?.let { fragmentActivity ->
+            fragmentActivity.getPreferences(Context.MODE_PRIVATE).edit().putInt(THEME_KEY, getThemeNumberFromResourceId(themeResourceId)).apply()
+            fragmentActivity.recreate()
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> {
-                if (parentFragmentManager.backStackEntryCount > 0) {
-                    parentFragmentManager.popBackStack()
-                }
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
 }

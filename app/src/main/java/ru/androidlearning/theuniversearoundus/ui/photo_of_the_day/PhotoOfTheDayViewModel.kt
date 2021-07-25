@@ -5,10 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import ru.androidlearning.theuniversearoundus.BuildConfig
 import ru.androidlearning.theuniversearoundus.model.DataLoadState
 import ru.androidlearning.theuniversearoundus.model.web.WebRepository
 import ru.androidlearning.theuniversearoundus.model.web.WebRepositoryImpl
@@ -23,8 +19,8 @@ class PhotoOfTheDayViewModel(
     fun getPictureOfTheDayFromServer(dateString: String? = null) {
         photoOfTheDayLiveData.value = DataLoadState.Loading(null)
         viewModelScope.launch(Dispatchers.IO) {
-            val daraLoadState = webRepository.getPictureOfTheDayFromDataSource(dateString)
-            photoOfTheDayLiveData.postValue(daraLoadState)
+            val dataLoadState = webRepository.getPictureOfTheDayFromDataSource(dateString)
+            photoOfTheDayLiveData.postValue(dataLoadState)
         }
     }
 }
