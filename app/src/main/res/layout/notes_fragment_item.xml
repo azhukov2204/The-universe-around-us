@@ -39,35 +39,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="start"
-        app:constraint_referenced_ids="highPriorityCheckBox" />
+        app:constraint_referenced_ids="highPrioritySwitch" />
 
-    <CheckBox
-        android:id="@+id/highPriorityCheckBox"
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/highPrioritySwitch"
         android:layout_width="wrap_content"
+        android:text="@string/priority"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/moveItemUp"
+        app:layout_constraintEnd_toStartOf="@id/removeItemImageView"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/moveItemUp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/default_margin_size"
-        android:tint="@color/design_default_color_error"
-        app:layout_constraintEnd_toStartOf="@id/removeItemImageView"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/arrow_up_float" />
-
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/moveItemDown"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/default_margin_size"
-        android:tint="@color/design_default_color_error"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/removeItemImageView"
-        app:srcCompat="@android:drawable/arrow_down_float" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/removeItemImageView"

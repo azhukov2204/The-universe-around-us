@@ -20,4 +20,9 @@
     <string name="add_new_note_fab_description">add new note</string>
     <string name="save_note_button_text">Save and close note</string>
     <string name="enter_note_text_hint">Enter a note text</string>
+    <string name="priority">Priority</string>
+    <string name="notes_title">Notes</string>
+    <string name="edit_notes_title">Edit a note</string>
+    <string name="search_notes">search a notes</string>
+    <string name="high_priority_only_text">High priority only</string>
 </resources>

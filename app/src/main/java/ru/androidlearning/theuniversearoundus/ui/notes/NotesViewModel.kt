@@ -29,7 +29,6 @@ class NotesViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             val dataChangeState = dbRepository.insertNoteIntoDB(noteEntity)
             noteDataChangingLiveData.postValue(Pair(dataChangeState, DataManipulationTypes.INSERT))
-
         }
     }
 

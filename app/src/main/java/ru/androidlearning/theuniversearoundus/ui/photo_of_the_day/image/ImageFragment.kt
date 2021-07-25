@@ -10,8 +10,6 @@ import ru.androidlearning.theuniversearoundus.R
 import ru.androidlearning.theuniversearoundus.databinding.ImageFragmentBinding
 import ru.androidlearning.theuniversearoundus.ui.utils.showSnackBar
 
-private const val ARG_IMAGE_URL = "ImageURL"
-
 class ImageFragment : Fragment() {
     private var _binding: ImageFragmentBinding? = null
     private val binding get() = _binding!!
@@ -56,6 +54,8 @@ class ImageFragment : Fragment() {
     }
 
     companion object {
+        private const val ARG_IMAGE_URL = "ImageURL"
+
         @JvmStatic
         fun newInstance(imageUrl: String?) =
             ImageFragment().apply {
