@@ -38,7 +38,6 @@ class PhotosOfTheUniverseFragment : Fragment() {
                 tab.text = context?.getText(childFragmentDetailsList[position].titleStringResourceId)
             }.attach()
             viewPagerIndicator.setViewPager(photosOfUniverseViewPager)
-            viewPagerIndicator.createIndicators(3, 0)
             photosOfUniverseViewPager.setPageTransformer(ZoomOutPageTransformer())
         }
     }

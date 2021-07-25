@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/photo_of_the_day_fragment_layout"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -87,16 +88,14 @@
                 android:layout_height="wrap_content" />
         </com.google.android.material.chip.ChipGroup>
 
-
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/image_or_video_fragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </com.google.android.material.appbar.AppBarLayout>
 
-
     <androidx.core.widget.NestedScrollView
-        android:id="@+id/photo_of_the_day_image_view_scroll"
+        android:id="@+id/photo_of_the_day_description_scroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -114,7 +113,7 @@
             android:orientation="vertical">
 
             <include
-                android:id="@+id/included_bottom_sheet_layout"
+                android:id="@+id/included_photo_description_sheet"
                 layout="@layout/photo_description_sheet"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

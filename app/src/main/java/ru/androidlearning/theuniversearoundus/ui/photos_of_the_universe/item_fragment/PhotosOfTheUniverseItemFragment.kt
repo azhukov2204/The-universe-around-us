@@ -1,21 +1,24 @@
 package ru.androidlearning.theuniversearoundus.ui.photos_of_the_universe.item_fragment
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.transition.*
 import coil.api.load
 import ru.androidlearning.theuniversearoundus.R
 import ru.androidlearning.theuniversearoundus.databinding.PhotosOfTheUniverseItemFragmentBinding
 import ru.androidlearning.theuniversearoundus.model.DataLoadState
 import ru.androidlearning.theuniversearoundus.model.web.data_sources.api.PhotosOfTheUniverseDTO
 import ru.androidlearning.theuniversearoundus.ui.utils.showSnackBar
-import java.lang.IndexOutOfBoundsException
 
 private const val ARG_PARAM_SEARCH_STRING = "ARG_PARAM_SEARCH_STRING"
 private const val DEFAULT_SEARCH_STRING = "Earth photo"
+private const val ANIMATION_EXPAND_IMAGE_DURATION: Long = 500L
+private const val ANIMATION_FADE_DURATION: Long = 1000L
 
 class PhotosOfTheUniverseItemFragment : Fragment() {
     companion object {
@@ -30,6 +33,7 @@ class PhotosOfTheUniverseItemFragment : Fragment() {
     private val binding get() = _binding!!
     private val photosOfTheUniverseItemViewModel: PhotosOfTheUniverseItemViewModel by lazy { ViewModelProvider(this).get(PhotosOfTheUniverseItemViewModel::class.java) }
     private lateinit var searchString: String
+    private var isExpanded = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,6 +66,8 @@ class PhotosOfTheUniverseItemFragment : Fragment() {
     }
 
     private fun renderData(dataLoadState: DataLoadState<PhotosOfTheUniverseDTO>) {
+        val transitionsContainer = binding.photoOfUniverseItemLayout
+        TransitionManager.beginDelayedTransition(transitionsContainer, Fade().apply { duration = ANIMATION_FADE_DURATION })
         when (dataLoadState) {
             is DataLoadState.Success -> {
                 fillData(dataLoadState.responseData)
@@ -87,11 +93,27 @@ class PhotosOfTheUniverseItemFragment : Fragment() {
                     lifecycle(this@PhotosOfTheUniverseItemFragment)
                     error(R.drawable.ic_error_load_image)
                 }
+                binding.photoOfUniverseImageView.setOnClickListener { expandOrCollapseImage(it as ImageView) }
             }
             loadingLayoutIsVisible(false)
         } catch (e: IndexOutOfBoundsException) {
             showError(e.message)
         }
+    }
+
+    private fun expandOrCollapseImage(imageView: ImageView) {
+        isExpanded = !isExpanded
+        val transitionSet = TransitionSet().apply {
+            addTransition(ChangeBounds())
+            addTransition(ChangeImageTransform())
+            duration = ANIMATION_EXPAND_IMAGE_DURATION
+        }
+        TransitionManager.beginDelayedTransition(binding.photoOfUniverseItemLayout, transitionSet)
+
+        val imageViewLayoutParams: ViewGroup.LayoutParams = imageView.layoutParams
+        imageViewLayoutParams.height = if (isExpanded) ViewGroup.LayoutParams.MATCH_PARENT else ViewGroup.LayoutParams.WRAP_CONTENT
+        imageView.layoutParams = imageViewLayoutParams
+        imageView.scaleType = if (isExpanded) ImageView.ScaleType.CENTER_CROP else ImageView.ScaleType.FIT_CENTER
     }
 
     private fun showError(errorMessage: String?) {

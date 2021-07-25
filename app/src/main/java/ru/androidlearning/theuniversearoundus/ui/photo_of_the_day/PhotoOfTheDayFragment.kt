@@ -2,12 +2,12 @@ package ru.androidlearning.theuniversearoundus.ui.photo_of_the_day
 
 import android.content.Intent
 import android.net.Uri
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
-import androidx.constraintlayout.widget.ConstraintLayout
-import com.google.android.material.bottomsheet.BottomSheetBehavior
+import androidx.lifecycle.ViewModelProvider
+import androidx.transition.Fade
+import androidx.transition.TransitionManager
 import ru.androidlearning.theuniversearoundus.R
 import ru.androidlearning.theuniversearoundus.databinding.PhotoOfTheDayFragmentBinding
 import ru.androidlearning.theuniversearoundus.model.DataLoadState
@@ -24,6 +24,7 @@ private const val IMAGE_MEDIA_TYPE = "image"
 private const val VIDEO_MEDIA_TYPE = "video"
 private const val REGEX_GET_VIDEO_ID = "^https?://.*(?:youtu.be/|v/|u/\\w/|embed/|watch?v=)([^#&?]*).*$"
 private const val DATE_FORMAT = "yyyy-MM-dd"
+private const val ANIMATION_FADE_DURATION: Long = 1000L
 
 class PhotoOfTheDayFragment : Fragment() {
     private var _binding: PhotoOfTheDayFragmentBinding? = null
@@ -62,7 +63,6 @@ class PhotoOfTheDayFragment : Fragment() {
     }
 
     private fun initChips() {
-        //пока вычисляю даты довольно хардконо:
         val calendar = Calendar.getInstance()
         val currentDateString = simpleDateFormat.format(calendar.time)
         val oneDayAgoString = simpleDateFormat.format(calendar.apply { add(Calendar.DATE, -1) }.time)
@@ -91,11 +91,14 @@ class PhotoOfTheDayFragment : Fragment() {
     }
 
     private fun renderData(dataLoadState: DataLoadState<PictureOfTheDayDTO>) {
+        val transitionsContainer = photoOfTheDayFragmentBinding.photoOfTheDayDescriptionScroll
+        TransitionManager.beginDelayedTransition(transitionsContainer, Fade().apply { duration = ANIMATION_FADE_DURATION })
         when (dataLoadState) {
             is DataLoadState.Success -> {
                 fillData(dataLoadState.responseData)
             }
             is DataLoadState.Loading -> {
+                clearData()
                 loadingLayoutIsVisible(true)
             }
             is DataLoadState.Error -> {
@@ -117,8 +120,18 @@ class PhotoOfTheDayFragment : Fragment() {
             } else (View.GONE)
     }
 
+    private fun clearData() {
+        photoOfTheDayFragmentBinding.includedPhotoDescriptionSheet.apply {
+            bottomSheetDescription.text = null
+            bottomSheetDescriptionTitle.text = null
+        }
+        for (fragment in childFragmentManager.fragments) {
+            childFragmentManager.beginTransaction().remove(fragment).commit()
+        }
+    }
+
     private fun fillData(responseData: PictureOfTheDayDTO) {
-        photoOfTheDayFragmentBinding.includedBottomSheetLayout.apply {
+        photoOfTheDayFragmentBinding.includedPhotoDescriptionSheet.apply {
             bottomSheetDescription.text = responseData.explanation
             bottomSheetDescriptionTitle.text = responseData.title
         }

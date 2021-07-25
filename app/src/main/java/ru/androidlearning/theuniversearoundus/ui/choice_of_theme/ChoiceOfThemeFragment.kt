@@ -2,12 +2,13 @@ package ru.androidlearning.theuniversearoundus.ui.choice_of_theme
 
 import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import ru.androidlearning.theuniversearoundus.R
 import ru.androidlearning.theuniversearoundus.databinding.ChoiceOfThemeFragmentBinding
+import ru.androidlearning.theuniversearoundus.ui.MainActivity
 import ru.androidlearning.theuniversearoundus.ui.utils.getThemeNumberFromResourceId
 
 const val THEME_KEY = "THEME"
@@ -58,8 +59,13 @@ class ChoiceOfThemeFragment : Fragment() {
 
         activity?.let { fragmentActivity ->
             fragmentActivity.getPreferences(Context.MODE_PRIVATE).edit().putInt(THEME_KEY, getThemeNumberFromResourceId(themeResourceId)).apply()
-            fragmentActivity.recreate()
+            activity?.let { it ->
+                val tempBundle = Bundle()
+                val intent = it.intent.apply { putExtra(MainActivity.NEED_OPEN_CHOICE_OF_THEME_FRAGMENT_KEY, tempBundle) }
+                it.finish()
+                it.startActivity(intent)
+                it.overridePendingTransition(R.anim.nav_default_enter_anim, R.anim.nav_default_exit_anim)
+            }
         }
     }
-
 }
