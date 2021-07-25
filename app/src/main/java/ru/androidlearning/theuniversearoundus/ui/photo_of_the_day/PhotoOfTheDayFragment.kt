@@ -57,7 +57,7 @@ class PhotoOfTheDayFragment : Fragment() {
             val uri = Uri.parse("${WIKI_BASE_URL}${searchText}")
             startActivity(Intent(Intent.ACTION_VIEW, uri))
         }
-        setBottomSheetBehavior(photoOfTheDayFragmentBinding.includedBottomSheetLayout.bottomSheetLayout)
+        //setBottomSheetBehavior(photoOfTheDayFragmentBinding.includedBottomSheetLayout.bottomSheetLayout)
         initChips()
     }
 
@@ -88,22 +88,6 @@ class PhotoOfTheDayFragment : Fragment() {
                 }
             }
         }
-    }
-
-    private fun setBottomSheetBehavior(bottomSheetLayout: ConstraintLayout) {
-        val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetLayout)
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-        bottomSheetBehavior.isFitToContents = true
-        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-            override fun onStateChanged(bottomSheet: View, newState: Int) {
-                if (newState == BottomSheetBehavior.STATE_HIDDEN) {
-                    bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-                }
-            }
-
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {
-            }
-        })
     }
 
     private fun renderData(dataLoadState: DataLoadState<PictureOfTheDayDTO>) {

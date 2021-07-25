@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".ui.choice_of_theme.ChoiceOfThemeFragment">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -18,41 +19,46 @@
             app:title="@string/chose_a_theme_title" />
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.core.widget.NestedScrollView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginStart="@dimen/default_margin_size"
         android:layout_marginEnd="@dimen/default_margin_size"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <LinearLayout
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/blue_theme_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:orientation="vertical">
+            android:text="@string/blue_theme"
+            android:theme="@style/TheUniverseAroundUs"
+            app:layout_constraintBottom_toTopOf="@id/orange_theme_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/blue_theme_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/blue_theme"
-                android:theme="@style/TheUniverseAroundUs" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/orange_theme_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/orange_theme"
+            android:theme="@style/TheUniverseAroundUs.OrangeTheme"
+            app:layout_constraintBottom_toTopOf="@id/green_theme_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/blue_theme_button" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/orange_theme_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/orange_theme"
-                android:theme="@style/TheUniverseAroundUs.OrangeTheme" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/green_theme_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/green_theme"
+            android:theme="@style/TheUniverseAroundUs.GreenTheme"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/orange_theme_button" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/green_theme_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/green_theme"
-                android:theme="@style/TheUniverseAroundUs.GreenTheme" />
-        </LinearLayout>
-
-    </androidx.core.widget.NestedScrollView>
-
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</LinearLayout>
