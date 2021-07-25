@@ -15,7 +15,7 @@ import java.io.IOException
 private const val BASE_URL = "https://api.nasa.gov/"
 
 class NASAOpenAPIDataSourceImpl : NASAOpenAPIDataSource {
-    override fun getPictureOfTheDay(callback: Callback<PictureOfTheDayDTO>, dateString: String?) {
+    override suspend fun getPictureOfTheDay(dateString: String?): PictureOfTheDayDTO =
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().setLenient().create()))
@@ -23,8 +23,6 @@ class NASAOpenAPIDataSourceImpl : NASAOpenAPIDataSource {
             .build()
             .create(PictureOfTheDayAPI::class.java)
             .getPictureOfTheDay(BuildConfig.NASA_API_KEY, dateString)
-            .enqueue(callback)
-    }
 
     private fun createOkHttpClient(interceptor: Interceptor): OkHttpClient {
         val httpClient = OkHttpClient.Builder()

@@ -1,6 +1,7 @@
 package ru.androidlearning.theuniversearoundus.ui.photo_of_the_day
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,11 +24,11 @@ class BottomNavigationDrawerFragment : BottomSheetDialogFragment() {
         navigationView?.setNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.navigation_one -> {
-                    Toast.makeText(context, "Navigation ill be implemented later", Toast.LENGTH_SHORT).show() //заглушка, в будущем будет доработано
+                    Log.d("Navigation", "Navigation ill be implemented later")  //заглушка, будет доработано или убрано
                     dismiss()
                 }
                 R.id.navigation_two -> {
-                    Toast.makeText(context, "Navigation will be implemented later", Toast.LENGTH_SHORT).show() //заглушка, в будущем будет доработано
+                    Log.d("Navigation", "Navigation ill be implemented later") //заглушка, будет доработано или убрано
                     dismiss()
                 }
             }

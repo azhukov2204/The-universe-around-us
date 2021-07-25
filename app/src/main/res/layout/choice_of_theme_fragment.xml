@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.choice_of_theme.ChoiceOfThemeFragment">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            style="@style/Widget.MaterialComponents.Toolbar.Primary"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:title="@string/chose_a_theme_title" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/default_margin_size"
+        android:layout_marginEnd="@dimen/default_margin_size"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/blue_theme_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/blue_theme"
+                android:theme="@style/TheUniverseAroundUs" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/orange_theme_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/orange_theme"
+                android:theme="@style/TheUniverseAroundUs.OrangeTheme" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/green_theme_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/green_theme"
+                android:theme="@style/TheUniverseAroundUs.GreenTheme" />
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
