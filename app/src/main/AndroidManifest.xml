@@ -12,14 +12,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/TheUniverseAroundUs">
-        <activity
-            android:name=".ui.MainActivity"
-            android:windowSoftInputMode="adjustPan|stateHidden">
+        <activity android:name=".ui.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ui.MainActivity"
+            android:theme="@style/TheUniverseAroundUs.Splash"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

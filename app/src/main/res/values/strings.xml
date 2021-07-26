@@ -24,5 +24,7 @@
     <string name="notes_title">Notes</string>
     <string name="edit_notes_title">Edit a note</string>
     <string name="search_notes">search a notes</string>
-    <string name="high_priority_only_text">High priority only</string>
+    <string name="high_priority_only_text">Priority filter</string>
+    <string name="no_notes_text">There are no notes to display: to add a new note, click on the plus button</string>
+    <string name="no_filtered_results_text">No filtered results</string>
 </resources>

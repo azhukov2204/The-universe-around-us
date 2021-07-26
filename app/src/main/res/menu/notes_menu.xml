@@ -2,6 +2,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/filter_by_high_priority_check_box"
+        android:checkable="true"
+        android:orderInCategory="5"
+        android:title="@string/high_priority_only_text"
+        app:actionViewClass="android.widget.CheckBox"
+        app:showAsAction="ifRoom|withText" />
+    <item
         android:id="@+id/action_search_notes"
         android:contentDescription="@string/search_notes"
         android:icon="@drawable/ic_search"
@@ -9,11 +16,4 @@
         android:title="@string/search_notes"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/filter_by_high_priority_check_box"
-        android:checkable="true"
-        android:orderInCategory="20"
-        android:title="@string/high_priority_only_text"
-        app:actionViewClass="android.widget.CheckBox"
-        app:showAsAction="ifRoom|withText" />
 </menu>

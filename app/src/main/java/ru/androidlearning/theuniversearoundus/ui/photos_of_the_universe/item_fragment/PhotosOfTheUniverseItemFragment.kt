@@ -14,6 +14,7 @@ import ru.androidlearning.theuniversearoundus.databinding.PhotosOfTheUniverseIte
 import ru.androidlearning.theuniversearoundus.model.DataLoadState
 import ru.androidlearning.theuniversearoundus.model.web.data_sources.api.PhotosOfTheUniverseDTO
 import ru.androidlearning.theuniversearoundus.ui.utils.showSnackBar
+import kotlin.random.Random
 
 private const val ARG_PARAM_SEARCH_STRING = "ARG_PARAM_SEARCH_STRING"
 private const val DEFAULT_SEARCH_STRING = "Earth photo"
@@ -83,8 +84,9 @@ class PhotosOfTheUniverseItemFragment : Fragment() {
 
     private fun fillData(responseData: PhotosOfTheUniverseDTO) {
         try {
-            //Приходит список картинок, из всего списка берем первую ссылку (пока не стал заморачиваться с более сложной логикой):
-            val imageUrl = responseData.collection.items[0].links[0].href
+            //Приходит список картинок, из всего списка берем рандомную ссылку :
+            val randomPictureIndex = Random.nextInt(0, responseData.collection.items.size)
+            val imageUrl = responseData.collection.items[randomPictureIndex].links[0].href
             if (imageUrl.isBlank()) {
                 binding.photoOfUniverseImageView.setImageResource(R.drawable.ic_no_photo)
                 showError(getString(R.string.empty_image_url))
