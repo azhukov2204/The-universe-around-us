@@ -13,9 +13,11 @@
     <string name="green_theme">Green theme</string>
     <string name="photo_of_the_day">Photo of the day</string>
     <string name="photos_of_the_universe">Photos of the Universe</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="earth_tab_title">Earth</string>
     <string name="mars_tab_title">Mars</string>
     <string name="moon_tab_title">Moon</string>
+    <string name="notes">Notes</string>
+    <string name="add_new_note_fab_description">add new note</string>
+    <string name="save_note_button_text">Save and close note</string>
+    <string name="enter_note_text_hint">Enter a note text</string>
 </resources>

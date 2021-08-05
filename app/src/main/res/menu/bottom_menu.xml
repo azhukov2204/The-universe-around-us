@@ -16,8 +16,15 @@
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/settings_fragment"
+        android:id="@+id/notes_fragment"
         android:orderInCategory="30"
+        android:icon="@drawable/ic_notes"
+        android:title="@string/notes"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/settings_fragment"
+        android:orderInCategory="40"
         android:icon="@drawable/ic_settings_menu"
         android:title="@string/settings"
         app:showAsAction="ifRoom" />
