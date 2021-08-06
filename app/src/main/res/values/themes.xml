@@ -73,5 +73,9 @@
         <item name="chipBackgroundColor">@color/background_chip_state_list</item>
         <item name="android:textColor">?attr/colorOnPrimary</item>
     </style>
+    
+    <style name="TheUniverseAroundUs.Splash">
+        <item name="android:windowBackground">@drawable/splash_background_drawable</item>
+    </style>
 
 </resources>

@@ -21,12 +21,9 @@
     <color name="green">#4caf50</color>
     <color name="dark_green">#003300</color>
     <color name="light_deep_green">#4c8c4a</color>
-
-
     <color name="blue">#0d47a1</color>
     <color name="dark_blue">#002171</color>
     <color name="light_blue">#0277bd</color>
     <color name="light_light_blue">#58a5f0</color>
     <color name="dark_light_blue">#002f6c</color>
-
 </resources>

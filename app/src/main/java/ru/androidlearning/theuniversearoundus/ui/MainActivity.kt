@@ -9,6 +9,7 @@ import androidx.navigation.ui.setupWithNavController
 import ru.androidlearning.theuniversearoundus.R
 import ru.androidlearning.theuniversearoundus.databinding.MainActivityBinding
 import ru.androidlearning.theuniversearoundus.ui.choice_of_theme.THEME_KEY
+import ru.androidlearning.theuniversearoundus.ui.notes.NotesFragment
 import ru.androidlearning.theuniversearoundus.ui.utils.getResourceIdFromThemeNumber
 
 class MainActivity : AppCompatActivity() {
@@ -17,6 +18,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private lateinit var binding: MainActivityBinding
+    private lateinit var navHostFragment: NavHostFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         applySavedTheme()
@@ -24,7 +26,7 @@ class MainActivity : AppCompatActivity() {
         binding = MainActivityBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.navigation_host_fragment) as NavHostFragment
+        navHostFragment = supportFragmentManager.findFragmentById(R.id.navigation_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
         binding.bottomNavigationView.setupWithNavController(navController)
         switchFragmentIfNecessary(navController)
@@ -39,5 +41,13 @@ class MainActivity : AppCompatActivity() {
     private fun applySavedTheme() {
         val themeResourceId = getResourceIdFromThemeNumber(getPreferences(Context.MODE_PRIVATE).getInt(THEME_KEY, 0))
         setTheme(themeResourceId)
+    }
+
+    override fun onBackPressed() {
+        if (NotesFragment.getIsOpenedNoteEditLayout() && (navHostFragment.childFragmentManager.fragments[0].javaClass == NotesFragment::class.java)) {
+            (navHostFragment.childFragmentManager.fragments[0] as NotesFragment).closeNoteEditLayout()
+        } else {
+            super.onBackPressed()
+        }
     }
 }

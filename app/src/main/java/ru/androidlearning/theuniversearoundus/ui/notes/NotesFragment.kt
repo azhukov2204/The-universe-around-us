@@ -28,6 +28,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.abs
 
+
 private const val EMPTY_ID_ERROR_TEXT = "ID is empty"
 private const val DATE_FORMAT = "yyyy-MM-dd HH:mm:ss"
 private const val TAG = "NotesFragment"
@@ -160,6 +161,7 @@ class NotesFragment : Fragment() {
                 Log.d(TAG, (dataChangeState.first as DataChangeState.Error<NoteEntity>).error.message.toString())
             }
         }
+        hideOrShowNoNotesTextView()
     }
 
     private fun renderLoadingData(dataLoadState: DataLoadState<List<NoteEntity>>?) {
@@ -174,13 +176,30 @@ class NotesFragment : Fragment() {
             else -> {
             }
         }
+        hideOrShowNoNotesTextView()
+    }
+
+    private fun hideOrShowNoNotesTextView() {
+        binding.noNotesTextView.visibility = if (notesRecyclerViewAdapter.getNotesList().size > 0) {
+            View.GONE
+        } else {
+            View.VISIBLE
+        }
+    }
+
+    private fun hideOrShowNoFilteredResultsTextView() {
+        binding.noFilteredResultsTextView.visibility = if (notesRecyclerViewAdapter.getFilteredNotesList().size > 0 || binding.noNotesTextView.visibility == View.VISIBLE) {
+            View.GONE
+        } else {
+            View.VISIBLE
+        }
     }
 
     private fun updateOrderNumbersInDB() {
         notesViewModel.updateOrderNumbersInDB(notesRecyclerViewAdapter.getNotesList())
     }
 
-    private fun closeNoteEditLayout() {
+    fun closeNoteEditLayout() {
         TransitionManager.beginDelayedTransition(binding.noteFragmentConstraintLayout, Fade().apply { duration = ANIMATION_DURATION })
         binding.addNoteFAB.show()
         binding.editNoteLayout.visibility = View.GONE
@@ -190,11 +209,7 @@ class NotesFragment : Fragment() {
         appCompatActivity.supportActionBar?.setTitle(R.string.notes_title)
         menuItemActionSearchNotes.isVisible = true
         menuItemFilterByHighPriorityCheckBox.isVisible = true
-    }
-
-    private fun hideKeyboard() {
-        val inputMethodManager = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputMethodManager.hideSoftInputFromWindow(binding.editNoteLayout.windowToken, 0)
+        isOpenedNoteEditLayout = false
     }
 
     private fun openNoteEditLayout() {
@@ -207,9 +222,21 @@ class NotesFragment : Fragment() {
         binding.noteEditText.setText(currentNote?.noteText)
         appCompatActivity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
         appCompatActivity.supportActionBar?.setHomeButtonEnabled(true)
+        showKeyboard()
         appCompatActivity.supportActionBar?.setTitle(R.string.edit_notes_title)
         menuItemActionSearchNotes.isVisible = false
         menuItemFilterByHighPriorityCheckBox.isVisible = false
+        isOpenedNoteEditLayout = true
+    }
+
+    private fun hideKeyboard() {
+        val inputMethodManager = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(binding.editNoteLayout.windowToken, 0)
+    }
+
+    private fun showKeyboard() {
+        val inputMethodManager = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -223,6 +250,7 @@ class NotesFragment : Fragment() {
             (it.actionView as CheckBox).setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
             (it.actionView as CheckBox).setOnCheckedChangeListener { _, isChecked ->
                 notesRecyclerViewAdapter.applyHighPriorityFilter(isChecked)
+                hideOrShowNoFilteredResultsTextView()
             }
         }
     }
@@ -230,11 +258,13 @@ class NotesFragment : Fragment() {
     private val searchNotesListener = object : SearchView.OnQueryTextListener {
         override fun onQueryTextSubmit(query: String?): Boolean {
             notesRecyclerViewAdapter.applyFilter(query, true)
+            hideOrShowNoFilteredResultsTextView()
             return true
         }
 
         override fun onQueryTextChange(newText: String?): Boolean {
             notesRecyclerViewAdapter.applyFilter(newText, true)
+            hideOrShowNoFilteredResultsTextView()
             return true
         }
     }
@@ -320,5 +350,10 @@ class NotesFragment : Fragment() {
                 super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
             }
         }
+    }
+
+    companion object {
+        private var isOpenedNoteEditLayout: Boolean = false
+        fun getIsOpenedNoteEditLayout() = isOpenedNoteEditLayout
     }
 }
