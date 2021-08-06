@@ -10,11 +10,8 @@ import ru.androidlearning.theuniversearoundus.R
 import ru.androidlearning.theuniversearoundus.databinding.PhotosOfTheUniverseFragmentBinding
 
 class PhotosOfTheUniverseFragment : Fragment() {
-
-
     private var _binding: PhotosOfTheUniverseFragmentBinding? = null
     private val binding get() = _binding!!
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

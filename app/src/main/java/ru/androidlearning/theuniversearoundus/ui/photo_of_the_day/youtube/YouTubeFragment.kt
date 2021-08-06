@@ -9,13 +9,10 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import ru.androidlearning.theuniversearoundus.databinding.YouTubeFragmentBinding
 
-private const val ARG_VIDEO_ID = "VideoId"
-
 class YouTubeFragment : Fragment() {
     private var _binding: YouTubeFragmentBinding? = null
     private val binding get() = _binding!!
     private var videoId: String? = null
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +48,8 @@ class YouTubeFragment : Fragment() {
     }
 
     companion object {
+        private const val ARG_VIDEO_ID = "VideoId"
+
         @JvmStatic
         fun newInstance(videoId: String?) =
             YouTubeFragment().apply {

@@ -1,9 +1,17 @@
 package ru.androidlearning.theuniversearoundus.ui.photo_of_the_day
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
+import android.text.style.UnderlineSpan
 import android.view.*
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.transition.Fade
@@ -131,7 +139,15 @@ class PhotoOfTheDayFragment : Fragment() {
 
     private fun fillData(responseData: PictureOfTheDayDTO) {
         photoOfTheDayFragmentBinding.includedPhotoDescriptionSheet.apply {
-            bottomSheetDescription.text = responseData.explanation
+            responseData.explanation?.let { it ->
+                val lengthOfFirstWord = it.split(" ").first().length
+                val spannableDescription = SpannableString(it).apply {
+                    setSpan(StyleSpan(Typeface.BOLD_ITALIC), 0, lengthOfFirstWord, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    setSpan(UnderlineSpan(), 0, lengthOfFirstWord, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    setSpan(ForegroundColorSpan(Color.BLACK), 0, lengthOfFirstWord, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                }
+                bottomSheetDescription.setText(spannableDescription, TextView.BufferType.SPANNABLE)
+            }
             bottomSheetDescriptionTitle.text = responseData.title
         }
         val imageUrl = responseData.url

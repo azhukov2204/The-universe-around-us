@@ -1,18 +1,23 @@
 package ru.androidlearning.theuniversearoundus.ui.notes
 
+import android.content.Context
 import android.graphics.Canvas
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
+import android.view.*
 import android.view.View.OnClickListener
-import android.view.ViewGroup
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import android.view.inputmethod.InputMethodManager
+import android.widget.CheckBox
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.*
+import androidx.transition.Fade
+import androidx.transition.TransitionManager
 import ru.androidlearning.theuniversearoundus.R
 import ru.androidlearning.theuniversearoundus.databinding.NotesFragmentBinding
 import ru.androidlearning.theuniversearoundus.model.DataChangeState
@@ -26,21 +31,26 @@ import kotlin.math.abs
 private const val EMPTY_ID_ERROR_TEXT = "ID is empty"
 private const val DATE_FORMAT = "yyyy-MM-dd HH:mm:ss"
 private const val TAG = "NotesFragment"
+private const val ANIMATION_DURATION = 300L
 
 class NotesFragment : Fragment() {
     private val notesViewModel: NotesViewModel by lazy { ViewModelProvider(this).get(NotesViewModel::class.java) }
     private var _binding: NotesFragmentBinding? = null
     private val binding get() = _binding!!
     private lateinit var notesRecyclerViewAdapter: NotesRecyclerViewAdapter
-    private lateinit var currentNote: NoteEntity
+    private var currentNote: NoteEntity? = null
     lateinit var itemTouchHelper: ItemTouchHelper
     private val simpleDateFormat = SimpleDateFormat(DATE_FORMAT, Locale.getDefault())
+    private lateinit var appCompatActivity: AppCompatActivity
+    private lateinit var menuItemActionSearchNotes: MenuItem
+    private lateinit var menuItemFilterByHighPriorityCheckBox: MenuItem
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = NotesFragmentBinding.inflate(inflater, container, false)
+        appCompatActivity = activity as AppCompatActivity
         return binding.root
     }
 
@@ -55,14 +65,21 @@ class NotesFragment : Fragment() {
             NotesRecyclerViewAdapter(onNoteItemClickListener, onNoteDeleteClickListener, onChangeOrderNumbers, onStartDragListener, onHighPriorityCheckBoxClickListener)
         binding.notesRecyclerView.adapter = notesRecyclerViewAdapter
         binding.notesRecyclerView.addItemDecoration(DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL))
+        binding.notesRecyclerView.adapter?.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+        binding.addNoteFAB.setOnClickListener(addNewNoteFABClickListener)
+        binding.noteEditText.addTextChangedListener(onNoteTextChangedListener)
+        val itemAnimator = binding.notesRecyclerView.itemAnimator as SimpleItemAnimator
+        itemAnimator.supportsChangeAnimations = false
+        appCompatActivity.setSupportActionBar(binding.topAppBar)
+        setHasOptionsMenu(true)
+
         itemTouchHelper = ItemTouchHelper(ItemTouchHelperCallback()).apply { attachToRecyclerView(binding.notesRecyclerView) }
+
         notesViewModel.notesDataLoadingLiveData.observe(viewLifecycleOwner) { dataLoadState -> renderLoadingData(dataLoadState) }
         notesViewModel.noteDataChangingLiveData.observe(viewLifecycleOwner) { dataChangeState -> renderChangingData(dataChangeState) }
         if (savedInstanceState == null) {
             notesViewModel.getAllNotesFromDB()
         }
-        binding.addNoteFAB.setOnClickListener(addNewNoteFABClickListener)
-        binding.saveNoteButton.setOnClickListener(saveNoteClickListener)
     }
 
     private val onNoteItemClickListener = object : NotesRecyclerViewAdapter.OnNoteClickListener {
@@ -74,8 +91,9 @@ class NotesFragment : Fragment() {
 
     private val onNoteDeleteClickListener = object : NotesRecyclerViewAdapter.OnDeleteClickListener {
         override fun onClick(noteEntity: NoteEntity) {
-            currentNote = noteEntity
-            notesViewModel.deleteNoteInDB(currentNote)
+            currentNote = noteEntity.also {
+                notesViewModel.deleteNoteInDB(it)
+            }
         }
     }
 
@@ -86,10 +104,10 @@ class NotesFragment : Fragment() {
     }
 
     private val onHighPriorityCheckBoxClickListener = object : NotesRecyclerViewAdapter.OnHighPriorityCheckBoxClickListener {
-        override fun onClick(noteEntity: NoteEntity, isChecked: Boolean) {
-            currentNote = noteEntity
-            currentNote.highPriority = isChecked
-            notesViewModel.updateNoteInDB(currentNote)
+        override fun onClick(noteEntity: NoteEntity) {
+            currentNote = noteEntity.also {
+                notesViewModel.updateNoteInDB(it)
+            }
         }
     }
 
@@ -100,33 +118,35 @@ class NotesFragment : Fragment() {
     }
 
     private val addNewNoteFABClickListener = OnClickListener {
-        currentNote = NoteEntity()
-        notesViewModel.insertNoteIntoDB(currentNote)
-        openNoteEditLayout()
+        currentNote = NoteEntity().also {
+            notesViewModel.insertNoteIntoDB(it)
+        }
     }
 
-    private val saveNoteClickListener = OnClickListener {
-        val calendar = Calendar.getInstance()
-        currentNote.noteText = binding.noteEditText.text.toString()
-        currentNote.creationDate = simpleDateFormat.format(calendar.time)
-        notesViewModel.updateNoteInDB(currentNote)
-        closeNoteEditLayout()
+    private val onNoteTextChangedListener = object : TextWatcher {
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            saveNote()
+        }
+
+        override fun afterTextChanged(s: Editable?) {}
     }
 
     private fun renderChangingData(dataChangeState: Pair<DataChangeState<NoteEntity>, DataManipulationTypes>) {
         when (dataChangeState.first) {
             is DataChangeState.Success -> {
                 currentNote = (dataChangeState.first as DataChangeState.Success<NoteEntity>).responseData
-                if (currentNote.id != null) {
+                if (currentNote?.id != null) {
                     when (dataChangeState.second) {
                         DataManipulationTypes.INSERT -> {
-                            notesRecyclerViewAdapter.addNote(currentNote)
+                            openNoteEditLayout()
+                            currentNote?.let { notesRecyclerViewAdapter.addNote(it) }
                         }
                         DataManipulationTypes.UPDATE -> {
-                            notesRecyclerViewAdapter.updateNote(currentNote)
+                            currentNote?.let { notesRecyclerViewAdapter.updateNote(it) }
                         }
                         DataManipulationTypes.DELETE -> {
-                            notesRecyclerViewAdapter.deleteNote(currentNote)
+                            currentNote?.let { notesRecyclerViewAdapter.deleteNote(it) }
                         }
                     }
                     updateOrderNumbersInDB()
@@ -161,15 +181,79 @@ class NotesFragment : Fragment() {
     }
 
     private fun closeNoteEditLayout() {
-        binding.addNoteFAB.visibility = View.VISIBLE
+        TransitionManager.beginDelayedTransition(binding.noteFragmentConstraintLayout, Fade().apply { duration = ANIMATION_DURATION })
+        binding.addNoteFAB.show()
         binding.editNoteLayout.visibility = View.GONE
-        binding.noteEditText.setText("")
+        appCompatActivity.supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        appCompatActivity.supportActionBar?.setHomeButtonEnabled(false)
+        hideKeyboard()
+        appCompatActivity.supportActionBar?.setTitle(R.string.notes_title)
+        menuItemActionSearchNotes.isVisible = true
+        menuItemFilterByHighPriorityCheckBox.isVisible = true
+    }
+
+    private fun hideKeyboard() {
+        val inputMethodManager = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(binding.editNoteLayout.windowToken, 0)
     }
 
     private fun openNoteEditLayout() {
-        binding.addNoteFAB.visibility = View.INVISIBLE
-        binding.editNoteLayout.visibility = View.VISIBLE
-        binding.noteEditText.setText(currentNote.noteText)
+        TransitionManager.beginDelayedTransition(binding.noteFragmentConstraintLayout, Fade().apply { duration = ANIMATION_DURATION })
+        binding.addNoteFAB.hide()
+        binding.editNoteLayout.apply {
+            visibility = View.VISIBLE
+            requestFocus()
+        }
+        binding.noteEditText.setText(currentNote?.noteText)
+        appCompatActivity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        appCompatActivity.supportActionBar?.setHomeButtonEnabled(true)
+        appCompatActivity.supportActionBar?.setTitle(R.string.edit_notes_title)
+        menuItemActionSearchNotes.isVisible = false
+        menuItemFilterByHighPriorityCheckBox.isVisible = false
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.notes_menu, menu)
+        menuItemActionSearchNotes = menu.findItem(R.id.action_search_notes).also {
+            (it.actionView as SearchView).setOnQueryTextListener(searchNotesListener)
+        }
+        menuItemFilterByHighPriorityCheckBox = menu.findItem(R.id.filter_by_high_priority_check_box).also {
+            (it.actionView as CheckBox).text = getString(R.string.high_priority_only_text)
+            (it.actionView as CheckBox).setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+            (it.actionView as CheckBox).setOnCheckedChangeListener { _, isChecked ->
+                notesRecyclerViewAdapter.applyHighPriorityFilter(isChecked)
+            }
+        }
+    }
+
+    private val searchNotesListener = object : SearchView.OnQueryTextListener {
+        override fun onQueryTextSubmit(query: String?): Boolean {
+            notesRecyclerViewAdapter.applyFilter(query, true)
+            return true
+        }
+
+        override fun onQueryTextChange(newText: String?): Boolean {
+            notesRecyclerViewAdapter.applyFilter(newText, true)
+            return true
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            saveNote()
+            closeNoteEditLayout()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun saveNote() {
+        val calendar = Calendar.getInstance()
+        currentNote?.let {
+            it.noteText = binding.noteEditText.text.toString()
+            it.creationDate = simpleDateFormat.format(calendar.time)
+            notesViewModel.updateNoteInDB(it)
+        }
     }
 
     private fun showError(errorMessage: String?) {
@@ -193,13 +277,14 @@ class NotesFragment : Fragment() {
         }
 
         override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
-            notesRecyclerViewAdapter.itemMove(viewHolder.adapterPosition, target.adapterPosition)
+            notesRecyclerViewAdapter.itemMove(viewHolder.absoluteAdapterPosition, target.absoluteAdapterPosition)
             return true
         }
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-            currentNote = notesRecyclerViewAdapter.getNotesList()[viewHolder.adapterPosition]
-            notesViewModel.deleteNoteInDB(currentNote)
+            currentNote = notesRecyclerViewAdapter.getFilteredNotesList()[viewHolder.absoluteAdapterPosition].also {
+                notesViewModel.deleteNoteInDB(it)
+            }
         }
 
         override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {

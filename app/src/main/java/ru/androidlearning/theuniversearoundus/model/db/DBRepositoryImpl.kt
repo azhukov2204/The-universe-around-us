@@ -14,6 +14,7 @@ class DBRepositoryImpl(
             val noteEntitiesList = dbDataSource.getAllNotes()
             DataLoadState.Success(noteEntitiesList)
         } catch (e: Exception) {
+            e.printStackTrace()
             DataLoadState.Error(e)
         }
     }
@@ -24,6 +25,7 @@ class DBRepositoryImpl(
             noteEntity.id = noteEntityId
             DataChangeState.Success(noteEntity)
         } catch (e: Exception) {
+            e.printStackTrace()
             DataChangeState.Error(e)
         }
     }
@@ -33,6 +35,7 @@ class DBRepositoryImpl(
             dbDataSource.deleteNote(noteEntity)
             DataChangeState.Success(noteEntity)
         } catch (e: Exception) {
+            e.printStackTrace()
             DataChangeState.Error(e)
         }
     }
@@ -42,6 +45,7 @@ class DBRepositoryImpl(
             dbDataSource.updateNote(noteEntity)
             DataChangeState.Success(noteEntity)
         } catch (e: Exception) {
+            e.printStackTrace()
             DataChangeState.Error(e)
         }
     }
